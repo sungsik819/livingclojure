@@ -91,6 +91,142 @@
 
 (some #{false} [false false false])
 
+;; 흐름 제어
+(if true "it is true" "it is false")
+
+(if false "it is true" "it is false")
+
+(if nil "it is true" "it is false")
+
+(if (= :drinkme :drinkme)
+  "Try it"
+  "Don't try it")
+
+(let [need-to-grow-small (> 5 3)]
+  (if need-to-grow-small
+    "drink bottle"
+    "don't drink bottle"))
+
+(if-let [need-to-grow-small (> 5 1)]
+  "drink-bottle"
+  "don't drink bottle")
+
+;; 참 값만 처리 - 참이 아니면 nil 반환
+(defn drink [need-to-grow-small]
+  (when need-to-grow-small "drink bottle"))
+
+(drink true)
+
+(drink false)
+
+(when-let [need-to-grow-small true]
+  "drink bottle")
+
+(when-let [need-to-grow-small false]
+  "drink bottle")
+
+;; 여러가지 한번에 테스트
+(let [bottle "drinkme"]
+  (cond
+    (= bottle "poison") "don't touch"
+    (= bottle "drinkme") "grow smaller"
+    (= bottle "empty") "all gone"))
+
+;; cond는 검사의 순서가 중요
+(let [x 5]
+  (cond
+    (> x 10) "bigger then 10"
+    (> x 4) "bigger then 4"
+    (> x 3) "bigger then 3"))
+
+(let [x 5]
+  (cond
+    (> x 3) "bigger then 3"
+    (> x 10) "bigger then 10"
+    (> x 4) "bigger then 4"))
+
+;; 참이 없으면 nil을 반환
+(let [x 1]
+  (cond
+    (> x 10) "bigger then 10"
+    (> x 4) "bigger then 4"
+    (> x 3) "bigger then 3"))
+
+(let [bottle "mystery"]
+  (cond
+    (= bottle "poison") "don't touch"
+    (= bottle "drinkme") "grow smaller"
+    (= bottle "empty") "all gone"
+    :else "unknown"))
+
+;; case
+(let [bottle "drinkme"]
+  (case bottle
+    "poison" "don't touch"
+    "drinkme" "grow smaller"
+    "empty" "all gone"))
+
+;; 참이 없으면 exception을 던진다.
+(let [bottle "mystery"]
+  (case bottle
+    "poison" "don't touch"
+    "drinkme" "grow smaller"
+    "empty" "all gone"))
+
+(let [bottle "mystery"]
+  (case bottle
+    "poison" "don't touch"
+    "drinkme" "grow smaller"
+    "empty" "all gone"
+    "unknown"))
+
+;; 함수를 만드는 함수
+;; partial - currying
+;; 1개의 함수의 인수를 단순화 시킴
+(defn grow [name direction]
+  (if (= direction :small)
+    (str name " is growing smaller")
+    (str name " is growing bigger")))
+
+(grow "Alice" :small)
+(grow "Alice" :big)
+
+(partial grow "Alice")
+
+((partial grow "Alice") :small)
+
+;; comp
+;; 여러 함수를 엮어서 하나의 함수로 만듦
+(defn toggle-grow [direction]
+  (if (= direction :small) :big :small))
+
+(toggle-grow :big)
+
+(toggle-grow :small)
+
+(defn oh-my [direction]
+  (str "Oh My! You are growing " direction))
+
+(oh-my (toggle-grow :small))
+
+(defn suprise [direction]
+  ((comp oh-my toggle-grow) direction))
+
+(suprise :small)
+
+;; partial 연습
+(defn adder [x y]
+  (+ x y))
+
+(adder 3 4)
+
+(def adder-5 (partial adder 5))
+
+(adder-5 10)
+
+;; 구조분해
+(let [[color size] ["blue" "small"]]
+  (str "The " color " door is " size))
 
 
 
