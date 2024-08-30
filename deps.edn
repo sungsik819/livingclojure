@@ -1,7 +1,8 @@
 {:paths ["src"]
 
  :deps {org.clojure/clojure {:mvn/version "1.11.4"}
-        camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}}
+        camel-snake-kebab/camel-snake-kebab {:mvn/version "0.4.3"}
+        org.clojure/core.async {:mvn/version "1.6.681"}}
 
  :aliases {:test {:extra-paths ["test"]
                   :extra-deps {lambdaisland/kaocha {:mvn/version "1.77.1236"}}
