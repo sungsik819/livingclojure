@@ -270,10 +270,10 @@
 (flower-colors {:flower1 "red" :flower2 "blue"})
 
 ;; 구조분해
-(defn flower-colors [{:keys [flower1 flower2]}]
+(defn flower-colors2 [{:keys [flower1 flower2]}]
   (str "The flowers are " flower1 " and " flower2))
 
-(flower-colors {:flower1 "red" :flower2 "blue"})
+(flower-colors2 {:flower1 "red" :flower2 "blue"})
 
 ;; 지연(Lazy) 평가
 (take 5 (range))
@@ -317,6 +317,96 @@
 ;; rest - 지연 시퀀스를 받으면 또다른 지연 시퀀스를 반환 한다.
 (take 3 (rest (cycle ["big" "small"])))
 
+;; 재귀
+(def adjs ["normal"
+           "too normal"
+           "too big"
+           "is swimming"])
+
+(defn alice-is [in out]
+  (if (empty? in)
+    out
+    (alice-is (rest in)
+              (conj out
+                    (str "Alice is " (first in))))))
+
+(alice-is adjs [])
+
+(defn alice-is-loop [input]
+  (loop [in input
+         out []]
+    (if (empty? in)
+      out
+      (recur (rest in)
+             (conj out (str "Alice is " (first in)))))))
+
+(alice-is-loop adjs)
+
+;; 재귀 호출시 스택 오버플로우
+(defn countdown [n]
+  (if (= n 0)
+    n
+    (countdown (- n 1))))
+
+(countdown 3)
+(countdown 100000)
+
+;; recur로 재귀 호출
+(defn countdown-recur [n]
+  (if (= n 0)
+    n
+    (recur (- n 1))))
+
+(countdown-recur 100000)
+
+;; 데이터 변환
+
+;; map
+(def animals [:mouse :duck :dodo :lory :eaglet])
+
+;; 키워드를 문자열로 만들기
+(#(str %) :mouse) ;; => ":mouse"
+
+(map #(str %) animals)
+
+;; 무슨 차이 이지?
+(map str animals)
+
+(class (map #(str %) animals))
+
+(take 3 (map #(str %) (range)))
+
+(take 10 (map #(str %) (range)))
+
+(println "Look at the mouse!") ;; => nil
+
+;; 정의만 되고 출력되진 않음
+(def animal-print (map #(println %) animals))
+
+;; 출력
+animal-print
+
+;; 강제 실행 -> doall을 사용하여 강제 실행되어 표시됨
+(def animal-print-doall (doall (map #(println %) animals)))
+
+animal-print-doall ;; => (nil nil nil nil nil)
+
+
+;; 함수가 한개 이상의 인자를 받을 경우 map은 2개의 컬렉션을 넣을 수 있다.
+(def colors ["brown" "black" "blue" "pink" "gold"])
+
+(defn gen-animal-string [animal color]
+  (str animal "-" color))
+
+(map gen-animal-string animals colors)
+
+;; 가장 짧은 컬렉션이 있으면 그 컬렉션의 길이에 맞춰서 종료 된다.
+(def colors-short ["brown" "black"])
+
+(map gen-animal-string animals colors-short)
+
+;; 가장 짧은 컬렉션에 맞춰 종료되기 때문에 무한 리스트 사용 가능
+(map gen-animal-string animals (cycle colors-short))
 
 
 
