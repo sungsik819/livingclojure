@@ -228,6 +228,94 @@
 (let [[color size] ["blue" "small"]]
   (str "The " color " door is " size))
 
+;; 구조분해 없이
+(let [x ["blue" "small"]
+      color (first x)
+      size (last x)]
+  (str "The " color " door is " size))
+
+;; 구조분해 중첩
+(let [[color [size]] ["blue" ["very small"]]]
+  (str "The " color " door is " size))
+
+;; 자료구조 전체 얻기
+(let [[color [size] :as original] ["blue" ["very small"]]]
+  {:color color :size size :original original})
+
+;; 구조분해 맵에 바인딩
+(let [{flower1 :flower1 flower2 :flower2}
+      {:flower1 "red" :flower2 "blue"}]
+  (str "The flowers are " flower1 " and " flower2))
+
+;; 맵에 해당요소가 없는 경우
+(let [{flower1 :flower1 flower2 :flower2 :or {flower2 "missing"}}
+      {:flower1 "red"}]
+  (str "The flowers are " flower1 " and " flower2))
+
+;; 맵의 전체 자료구조 얻기
+(let [{flower1 :flower1 :as all-flowers}
+      {:flower1 "red"}]
+  [flower1 all-flowers])
+
+;; 맵의 키와 심볼이 같은 경우 - 많이 쓰임
+(let [{:keys [flower1 flower2]}
+      {:flower1 "red" :flower2 "blue"}]
+  (str "The flowers are " flower1 " and " flower2))
+
+;; 함수 인수의 구조분해
+;; 구조분해 하기 전
+(defn flower-colors [colors]
+  (str "The flowers are " (:flower1 colors) " and " (:flower2 colors)))
+
+(flower-colors {:flower1 "red" :flower2 "blue"})
+
+;; 구조분해
+(defn flower-colors [{:keys [flower1 flower2]}]
+  (str "The flowers are " flower1 " and " flower2))
+
+(flower-colors {:flower1 "red" :flower2 "blue"})
+
+;; 지연(Lazy) 평가
+(take 5 (range))
+(take 10 (range))
+
+(range 5)
+
+(class (range 5))
+
+(count (take 1000 (range)))
+(count (take 100000 (range)))
+
+(repeat 3 "rabbit")
+(class (repeat 3 "rabbit"))
+
+;; repeat의 끝을 지정하지 않으면 무한이 된다.
+(take 5 (repeat "rabbit"))
+(count (take 5000 (repeat "rabbit")))
+
+(rand-int 10)
+
+(rand-int 10)
+
+;; 1개의 값을 가지고 반복하기 때문에 다른 값이 나올 수 없음
+;; repeat - 값을 반복
+(repeat 5 (rand-int 10)) ;; => (2 2 2 2 2)
+
+;; repeatly - 함수를 반복하여 실행
+#(rand-int 10)
+(#(rand-int 10))
+
+(repeatedly 5 #(rand-int 10))
+
+(take 10 (repeatedly #(rand-int 10)))
+
+;; cycle - 컬렉션의 요소를 무한 반복 한다.
+(take 3 (cycle ["big" "small"]))
+
+(take 6 (cycle ["big" "small"]))
+
+;; rest - 지연 시퀀스를 받으면 또다른 지연 시퀀스를 반환 한다.
+(take 3 (rest (cycle ["big" "small"])))
 
 
 
