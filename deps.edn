@@ -11,4 +11,8 @@
 
            :watch {:exec-args {:watch? true
                                :skip-meta :slow
-                               :fail-fast? true}}}}
+                               :fail-fast? true}}
+
+           :run {:main-opts ["-m" "async-tea-party"]}
+           :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}}
+                   :ns-default build}}}

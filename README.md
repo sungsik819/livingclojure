@@ -13,3 +13,8 @@
 ```bash
 > clj -X ch05/-main :arg1 "HelloPigeon"
 ```
+
+## 실행 파일 만들기
+```bash
+> clj -T:build uberjar
+```
