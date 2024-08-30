@@ -408,9 +408,90 @@ animal-print-doall ;; => (nil nil nil nil nil)
 ;; 가장 짧은 컬렉션에 맞춰 종료되기 때문에 무한 리스트 사용 가능
 (map gen-animal-string animals (cycle colors-short))
 
+;; reduce
+(reduce + [1 2 3 4 5])
 
+;; r은 계산된 누적 값
+;; x는 인자 값
+(reduce (fn [r x] (+ r (* x x))) [1 2 3])
 
+(reduce (fn [r x] (if (nil? x) r (conj r x)))
+        []
+        [:mouse nil :duck nil nil :lory])
 
+;; 다른 유용한 데이터 처리 함수들
+
+;; 반대되는 함수를 반환 한다.
+((complement nil?) nil)
+
+((complement nil?) 1)
+
+;; filter
+;; complement로 만들어서 필터링 하기
+(filter (complement nil?) [:mouse nil :dock nil])
+
+;; 키워드 함수로 필터링 하기
+(filter keyword? [:mouse nil :dock nil])
+
+;; remove
+(remove nil? [:mouse nil :duck nil])
+
+;; for
+;; name 함수는 키워드를 문자열로 바꾼다.
+(for [animal [:mouse :duck :lory]]
+  (str (name animal)))
+
+;; 중첩 순회
+(for [animal [:mouse :duck :lory]
+      color [:red :blue]]
+  (str (name color) (name animal)))
+
+;; let 수정자 바인딩
+(for [animal [:mouse :duck :lory]
+      color [:red :blue]
+      :let [animal-str (str "animal-" (name animal))
+            color-str (str "color-" (name color))
+            display-str (str animal-str "-" color-str)]]
+  display-str)
+
+;; when 수정자
+(for [animal [:mouse :duck :lory]
+      color [:red :blue]
+      :let [animal-str (str "animal-" (name animal))
+            color-str (str "color-" (name color))
+            display-str (str animal-str "-" color-str)]
+      :when (= color :blue)]
+  display-str)
+
+;; 중첩된 컬렉션을 받아서 중첩을 컬렉션을 제거하여 하나로 만든다.
+(flatten [[:duck [:mouse] [[:lory]]]]) ;; => (:duck :mouse :lory)
+
+;; 자료구조 형식 변환
+(vec '(1 2 3))
+
+(into [] '(1 2 3))
+
+;; 정렬된 map으로 변경 하기
+(sorted-map :b 2 :a 1 :z 3)
+
+(into (sorted-map) {:b 2 :c 3 :a 1})
+
+(into {} [[:a 1] [:b 2] [:c 3]]) ;; => {:a 1, :b 2, :c 3}
+
+(into [] {:a 1 :b 2 :c 3}) ;; => [[:a 1] [:b 2] [:c 3]]
+
+;; partition
+;; 3개씩 묶기
+(partition 3 [1 2 3 4 5 6 7 8 9])
+
+;; 나누어 떨어지지 않으면 버린다.
+(partition 3 [1 2 3 4 5 6 7 8 9 10])
+
+;; partition-all 나누어 떨어지지 않아도 묶는다
+(partition-all 3 [1 2 3 4 5 6 7 8 9 10])
+
+;; partition-by 함수를 받아서 값이 변할때마다 새로운 묶음을 만든다.
+(partition-by #(= 6 %) [1 2 3 4 5 6 7 8 9 10])
 
 
 
